@@ -11,10 +11,6 @@ import palettes.effects.Refresher;
 
 public class X implements GifEffect {
 
-	public X() {
-		// TODO Auto-generated constructor stub
-	}
-
 	@Override
 	public String getEffectName() {
 		return "X";
