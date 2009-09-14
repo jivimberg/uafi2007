@@ -9,11 +9,11 @@ import javax.swing.JPanel;
 import palettes.effects.GifEffect;
 import palettes.effects.Refresher;
 
-public class X implements GifEffect {
+public class MixPalette implements GifEffect {
 
 	@Override
 	public String getEffectName() {
-		return "X";
+		return "Mix Palette";
 	}
 
 	@Override

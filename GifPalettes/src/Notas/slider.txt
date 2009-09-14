@@ -1,0 +1,31 @@
+	private Refresher refresher;
+
+
+	JPanel panel = new JPanel();
+		JSlider red = new JSlider(JSlider.VERTICAL,
+                FPS_MIN, FPS_MAX, FPS_INIT);
+
+		red.addChangeListener(new SliderListener());
+		red.setMajorTickSpacing(40);
+		red.setMinorTickSpacing(1);
+		red.setPaintTicks(true);
+		red.setPaintLabels(true);		
+		panel.add(red);
+		
+		
+
+		return panel;
+
+
+
+class SliderListener implements ChangeListener {
+	    public void stateChanged(ChangeEvent e) {
+	        JSlider source = (JSlider)e.getSource();
+	        if (!source.getValueIsAdjusting()) {
+	         luminance = source.getValue() / 89f + 1;
+	         refresher.refresh();
+	            
+		 
+	        }    
+	    }
+	}
