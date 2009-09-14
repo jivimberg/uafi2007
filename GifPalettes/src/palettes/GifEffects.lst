@@ -3,3 +3,7 @@ palettes.effects.impl.RedScaleEffect
 palettes.effects.impl.YellowScaleEffect
 palettes.effects.impl.LightBlueScaleEffect
 palettes.effects.impl.NegativeScaleEffect
+palettes.effects.impl.MixPalette
+palettes.effects.impl.BlueScaleEffect
+palettes.effects.impl.GreenScaleEffect
+palettes.effects.impl.Y

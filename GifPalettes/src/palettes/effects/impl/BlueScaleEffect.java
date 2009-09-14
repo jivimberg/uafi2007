@@ -10,7 +10,7 @@ import palettes.effects.GifEffect;
 import palettes.effects.Refresher;
 
 
-public class RedScaleEffect implements GifEffect{
+public class BlueScaleEffect implements GifEffect{
 	
 	static final int FPS_MIN = 0;
 	static final int FPS_MAX = 100;
@@ -18,7 +18,7 @@ public class RedScaleEffect implements GifEffect{
 		
 	@Override
 	public String getEffectName() {
-		return "Red Scale";
+		return "Blue Scale";
 	}
 
 	@Override
@@ -36,9 +36,9 @@ public class RedScaleEffect implements GifEffect{
 	public List<byte[]> transform(List<byte[]> palette) {
 		List<byte[]> transformed = new ArrayList<byte[]>(palette.size());
 		for (byte[] colour : palette) {
-			byte R = (byte)(colour[0]);
+			byte R = (byte)(0);
 			byte G = (byte)(0);
-			byte B = (byte)(0);
+			byte B = (byte)(colour[2]);
 			transformed.add(new byte[] {R, G, B});
 		}
 		return transformed;
