@@ -1,6 +1,7 @@
 package palettes.effects;
 import java.util.List;
 
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 
@@ -29,7 +30,7 @@ public interface GifEffect {
 	/**
 	 * @return panel con opciones de configuracion del efecto, o null si no es configurable.
 	 */
-	JPanel getEffectOptionsPanel();
+	JComponent getEffectOptionsPanel();
 	
 	/**
 	 * Provee al efecto de un refresher para que este desencadene la recalculación de la transformación al modificar sus parametros.

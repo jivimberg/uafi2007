@@ -12,6 +12,7 @@ import javax.swing.Box;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
@@ -106,7 +107,7 @@ public class EnvironmentManager implements Refresher {
 		if(effectP.getComponentCount() != 0) {
 			effectP.remove(0);
 		}
-		JPanel options = effect.getEffectOptionsPanel();
+		JComponent options = effect.getEffectOptionsPanel();
 		if(options != null) {
 			effectP.add(options);
 		}
