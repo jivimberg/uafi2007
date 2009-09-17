@@ -1,3 +1,4 @@
+palettes.effects.impl.RGBFilteringEffect
 palettes.effects.impl.GreysScaleEffect
 palettes.effects.impl.RedScaleEffect
 palettes.effects.impl.YellowScaleEffect
