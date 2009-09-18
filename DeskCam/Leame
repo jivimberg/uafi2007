@@ -12,6 +12,21 @@ Intro comp.:
 	Daniel.
 	
 	
+Acerca de JMF:
+
+	Para que todo compile necesitan bajar e instalar JMF.
+	Una vez instalado, tiene que agregar al buildpath del proyecto las librerias que se instalan en
+	la carpeta C:\Program Files\JMF2.1.1e\lib\ .
+	
+	Ahora, que sucede. El JDK de java ya viene con las librerias jmf.jar y sound.jar, pero con restricciones
+	de acceso, por lo que algunas clases no pueden ser importadas. Y si agregan jmf.jar y sound.jar de la
+	direccion que les al buildpath no se soluciona, por que van a estar importando 2 veces las mismas librerias.
+	Para arreglarlo tiene que configurar un nuevo JDK para el proyecto.
+	Cuando ponen para buscar la carpeta en donde se encuentra, pongan la del JDK de siempre, pero 
+	en el recuadro de abajo cuando se cargen las librerias que hay en ese jdk, quiten jmf.jar y sound.jar.
+	
+	Puede ser confuso, y no soy el mejor explicando, pero no es complicado.
+	
 	
 División de Tareas:
 
