@@ -40,8 +40,7 @@ public class ControlManager implements InputsResponser {
 		processor.setInputsResponser(this);
 		
 		/* Se obtiene un player asociado a la webcam para proveer de imagenes al programa */
-		// TODO: Crear un player asociado a la webcam.
-		Player player = null;
+		Player player = WebcamAccesPoint.getWebcamPlayer();
 		
 		/* Se crea un stream de imagenes que genere imagenes desde la webcam */
 		camImagesStream = new CamImagesStream(player);
@@ -64,7 +63,9 @@ public class ControlManager implements InputsResponser {
 		/* Se inicia un thread que fuerza al procesador a generar nuevas imagenes */
 		Thread th = new Thread("Image Processing Thread") {
 			public void run() {
-				outputStream.obtainImage();
+				for(;;) {
+					outputStream.obtainImage();
+				}
 			};
 		};
 		th.setDaemon(true); // El thread muere al terminar el programa.

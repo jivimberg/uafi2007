@@ -2,7 +2,11 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.6.0_15_JMF"/>
-	<classpathentry kind="lib" path="C:/Program Files/JMF2.1.1e/lib/jmf.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/JMF2.1.1e/lib/jmf.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/C:/Program Files/JMF2.1.1e/jmf20-apidocs/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="C:/Program Files/JMF2.1.1e/lib/customizer.jar"/>
 	<classpathentry kind="lib" path="C:/Program Files/JMF2.1.1e/lib/mediaplayer.jar"/>
 	<classpathentry kind="lib" path="C:/Program Files/JMF2.1.1e/lib/multiplayer.jar"/>

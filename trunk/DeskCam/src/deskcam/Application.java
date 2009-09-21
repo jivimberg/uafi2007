@@ -28,6 +28,10 @@ public class Application {
 	}
 	
 	private static Application app = new Application();
+	static {
+		app.control.init();
+		
+	}
 	
 	public static Application getApplication() {
 		return app;
