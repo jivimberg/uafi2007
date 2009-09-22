@@ -37,7 +37,7 @@ public class EnvironmentManager {
 		
 		mainP.add(windowsPanel);
 		
-		optionsPanel = new JPanel(new BorderLayout());
+		optionsPanel = new JPanel();
 		
 		mainP.add(optionsPanel, BorderLayout.EAST);
 		
@@ -58,6 +58,7 @@ public class EnvironmentManager {
 			optionsPanel.remove(0);
 		}
 		optionsPanel.add(panel);
+		optionsPanel.validate();
 	}
 
 	/**
@@ -81,7 +82,9 @@ public class EnvironmentManager {
 		JPanel panel = new JPanel(new BorderLayout());
 		panel.add(player.getVisualComponent());
 		panel.add(player.getControlPanelComponent(), BorderLayout.SOUTH);
-		windowsPanel.add(panel);
+		JPanel outter = new JPanel();
+		outter.add(panel);
+		windowsPanel.add(outter);
 		windowsPanel.validate();
 	}
 	
