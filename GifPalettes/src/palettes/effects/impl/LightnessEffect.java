@@ -1,15 +1,11 @@
 package palettes.effects.impl;
 
-import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.AbstractAction;
-import javax.swing.Box;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
-import javax.swing.JToggleButton;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -27,7 +23,6 @@ public class LightnessEffect implements GifEffect {
 		return "Lightness";
 	}
 
-	@SuppressWarnings("serial")
 	@Override
 	public JComponent getEffectOptionsPanel() {
 		JPanel panel = new JPanel();
