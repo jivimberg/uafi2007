@@ -1,1 +1,6 @@
+deskcam.model.impl.Oldie
+deskcam.model.impl.Composition
+deskcam.model.impl.Fire
+deskcam.model.impl.Velocity
+deskcam.model.impl.Phantom
 deskcam.model.impl.BackgroundFilter

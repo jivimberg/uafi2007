@@ -6,6 +6,8 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.image.MemoryImageSource;
 import java.awt.image.PixelGrabber;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.swing.Box;
@@ -16,48 +18,53 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import deskcam.model.ImagesStreamProcessor;
-import deskcam.model.RGBConstants;
 import deskcam.model.criteria.PixelEqualityCriteria;
 import deskcam.resource.ImagesStream;
 import deskcam.resource.ImagesStreamListener;
 import deskcam.resource.InputsListener;
 import deskcam.resource.InputsResponser;
 
-/**
- * Procesador que cambia el fondo del stream de la webcam.
- * El procesador utiliza, ademas del stream de la webcam, una imagen para el background y una de referencia.
- * El procesamiento consiste en identificar los pixeles coincidentes entre una imagen obtenida desde
- * la webcam y otra de referencia, y reemplazar estos por los correspondientes al background.
- *
- */
-public class BackgroundFilter implements ImagesStreamProcessor, RGBConstants {
+public abstract class AbstractStreamProcessor implements ImagesStreamProcessor, InputsListener {
 
 	private ImagesStream camstream;
-	private volatile int[] reference;
-	private volatile int[] background;
+	
+	private String name;
+	
+	private volatile Map<String, int[]> images;
 	
 	private int tolerance = 20;
 	private Class<? extends PixelEqualityCriteria> pxCriteria =
 											PixelEqualityCriteria.CRITERIAS.values()[0].getCriteria();
 	
+	public AbstractStreamProcessor(String name, String... images) {
+		this.images = new HashMap<String, int[]>(images.length);
+		for (String imageName : images) {
+			this.images.put(imageName, null);
+		}
+		this.name = name;
+	}
+	
 	@Override
-	public ImagesStream getOutputStream() {
-		return outputStream;
+	public String getProcessorName() {
+		return name;
+	}
+	
+	
+	@Override
+	public void imageObtained(String resourceName, Image img) {
+		images.put(resourceName, preprocessImage(img));
 	}
 
 	@Override
 	public void setInputsResponser(InputsResponser res) {
-		res.requestImage("reference", new InputsListener() {
-			public void imageObtained(String resourceName, Image img) {
-				reference = preprocessImage(img);
-			}
-		});
-		res.requestImage("background", new InputsListener() {
-			public void imageObtained(String resourceName, Image img) {
-				background = preprocessImage(img);
-			}
-		});
-		
+		for (String resource : images.keySet()) {
+			res.requestImage(resource, this);
+		}
+
+		res.setConfigurationsPanel(createConfigurationPanel());
+	}
+	
+	protected JComponent createConfigurationPanel() {
 		JComponent panel = Box.createVerticalBox();
 		
 		final JComboBox criteriaSelector = new JComboBox(PixelEqualityCriteria.CRITERIAS.values());
@@ -80,8 +87,8 @@ public class BackgroundFilter implements ImagesStreamProcessor, RGBConstants {
 		toleranceSelector.setPaintTicks(true);
 		toleranceSelector.setPaintLabels(true);		
 		panel.add(toleranceSelector);
-
-		res.setConfigurationsPanel(panel);
+		
+		return panel;
 	}
 
 	public void setInputStream(ImagesStream s) {
@@ -101,6 +108,11 @@ public class BackgroundFilter implements ImagesStreamProcessor, RGBConstants {
 		return pixels;
 	}
 	
+	@Override
+	public ImagesStream getOutputStream() {
+		return outputStream;
+	}
+
 	private ImagesStream outputStream = new ImagesStream() {
 		
 		private boolean realized;
@@ -108,18 +120,10 @@ public class BackgroundFilter implements ImagesStreamProcessor, RGBConstants {
 		public Image obtainImage() {
 			waitForRealization();
 			
-			Image input = camstream.obtainImage();
-			
-			int w = input.getWidth(null);
-			int h = input.getHeight(null);
-			
-			int[] campixels = new int[w*h];
-			PixelGrabber grabber = new PixelGrabber(input, 0, 0, w, h, campixels, 0, w);
-			try {
-				grabber.grabPixels(0);
-			} catch (InterruptedException e) {}
-			
-			int[] outpixels = new int[w*h];
+			Image camimage = camstream.obtainImage();
+			int[] input = preprocessImage(camimage);
+			int w = camimage.getWidth(null);
+			int h = camimage.getHeight(null);
 			
 			PixelEqualityCriteria criteria;
 			try {
@@ -128,15 +132,9 @@ public class BackgroundFilter implements ImagesStreamProcessor, RGBConstants {
 				throw new RuntimeException(e);
 			}
 			
-			int ix;
-			for (int j = 0; j < h; j++) {
-				for (int i = 0; i < w; i++) {
-					ix = j*w + i;
-					outpixels[ix] = criteria.pxEquals(campixels[ix], reference[ix]) ? background[ix] : campixels[ix]; 
-				}
-			}
+			int[] obtained = AbstractStreamProcessor.this.obtainImage(input, images, criteria, w, h);
 			
-			Image output = Toolkit.getDefaultToolkit().createImage(new MemoryImageSource(w, h, outpixels, 0, w));
+			Image output = Toolkit.getDefaultToolkit().createImage(new MemoryImageSource(w, h, obtained, 0, w));
 			
 			if(output != null) {
 				for (ImagesStreamListener l : listeners) {
@@ -148,7 +146,7 @@ public class BackgroundFilter implements ImagesStreamProcessor, RGBConstants {
 		
 		private void waitForRealization() {
 			if(!realized) {
-				while(camstream == null || background == null || reference == null || camstream.obtainImage() == null) {
+				while(camstream == null || images.containsValue(null) || camstream.obtainImage() == null) {
 					try {
 						Thread.sleep(500);
 					} catch (InterruptedException e) {}
@@ -166,7 +164,6 @@ public class BackgroundFilter implements ImagesStreamProcessor, RGBConstants {
 		}
 	};
 	
-	public String getProcessorName() {
-		return "Scenes Swap";
-	};
+	abstract int[] obtainImage(int[] camImage, Map<String, int[]> images, PixelEqualityCriteria criteria, int w, int h);
+	
 }

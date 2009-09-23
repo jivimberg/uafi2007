@@ -46,4 +46,6 @@ public interface ImagesStreamProcessor {
 	 */
 	ImagesStream getOutputStream();
 	
+	String getProcessorName();
+	
 }
