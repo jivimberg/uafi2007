@@ -25,6 +25,12 @@ public class Velocity extends AbstractStreamProcessor implements RGBConstants {
 	private int framecount;
 	private int interval = 15;
 	
+	@Override
+	public void relaseResouces() {
+		super.relaseResouces();
+		olds = new LinkedList<int[]>();
+	}
+
 	public Velocity() {
 		super("Velocity", "reference");
 	}

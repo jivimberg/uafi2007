@@ -100,12 +100,12 @@ public class BackgroundFilter implements ImagesStreamProcessor, RGBConstants {
 
 		return pixels;
 	}
+
+	private boolean realized;
 	
 	private ImagesStream outputStream = new ImagesStream() {
 		
-		private boolean realized;
-		
-		public Image obtainImage() {
+		public Image obtainImage() throws InterruptedException {
 			waitForRealization();
 			
 			Image input = camstream.obtainImage();
@@ -146,12 +146,10 @@ public class BackgroundFilter implements ImagesStreamProcessor, RGBConstants {
 			return output;
 		}
 		
-		private void waitForRealization() {
+		private void waitForRealization() throws InterruptedException {
 			if(!realized) {
 				while(camstream == null || background == null || reference == null || camstream.obtainImage() == null) {
-					try {
-						Thread.sleep(500);
-					} catch (InterruptedException e) {}
+					Thread.sleep(500);
 				}
 				realized = true;
 			}
@@ -166,7 +164,17 @@ public class BackgroundFilter implements ImagesStreamProcessor, RGBConstants {
 		}
 	};
 	
+	@Override
 	public String getProcessorName() {
 		return "Scenes Swap";
+	}
+
+	@Override
+	public void relaseResouces() {
+		realized = false;
+		camstream = null;
+		reference = null;
+		background = null;
 	};
+	
 }

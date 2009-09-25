@@ -111,4 +111,13 @@ public class Composition extends AbstractStreamProcessor implements RGBConstants
 		return panel;
 	}
 
+	@Override
+	public void relaseResouces() {
+		super.relaseResouces();
+		output = null;
+		clear = true;
+	}
+	
+	
+
 }

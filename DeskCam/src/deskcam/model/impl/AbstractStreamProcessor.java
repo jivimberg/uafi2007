@@ -101,6 +101,7 @@ public abstract class AbstractStreamProcessor implements ImagesStreamProcessor, 
 		
 		int[] pixels = new int[w*h];
 		PixelGrabber grabber = new PixelGrabber(img, 0, 0, w, h, pixels, 0, w);
+
 		try {
 			grabber.grabPixels(0);
 		} catch (InterruptedException e) {}
@@ -113,11 +114,11 @@ public abstract class AbstractStreamProcessor implements ImagesStreamProcessor, 
 		return outputStream;
 	}
 
+	private boolean realized;
+	
 	private ImagesStream outputStream = new ImagesStream() {
 		
-		private boolean realized;
-		
-		public Image obtainImage() {
+		public Image obtainImage() throws InterruptedException {
 			waitForRealization();
 			
 			Image camimage = camstream.obtainImage();
@@ -144,12 +145,10 @@ public abstract class AbstractStreamProcessor implements ImagesStreamProcessor, 
 			return output;
 		}
 		
-		private void waitForRealization() {
+		private void waitForRealization() throws InterruptedException {
 			if(!realized) {
 				while(camstream == null || images.containsValue(null) || camstream.obtainImage() == null) {
-					try {
-						Thread.sleep(500);
-					} catch (InterruptedException e) {}
+					Thread.sleep(500);
 				}
 				realized = true;
 			}
@@ -165,5 +164,13 @@ public abstract class AbstractStreamProcessor implements ImagesStreamProcessor, 
 	};
 	
 	abstract int[] obtainImage(int[] camImage, Map<String, int[]> images, PixelEqualityCriteria criteria, int w, int h);
-	
+
+	@Override
+	public void relaseResouces() {
+		realized = false;
+		camstream = null;
+		for (Map.Entry<String, int[]> img : images.entrySet()) {
+			img.setValue(null);
+		}
+	}
 }

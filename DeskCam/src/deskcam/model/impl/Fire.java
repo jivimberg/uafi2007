@@ -20,4 +20,8 @@ public class Fire extends Velocity {
 		return newimg;
 	}
 	
+	@Override
+	public String getProcessorName() {
+		return "Fire";
+	}
 }

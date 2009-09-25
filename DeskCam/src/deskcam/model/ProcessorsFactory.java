@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -11,7 +12,7 @@ import java.util.List;
  */
 public class ProcessorsFactory {
 
-	private static List<Class<? extends ImagesStreamProcessor>> processors;
+	private static List<ImagesStreamProcessor> processors;
 	static {
 		loadProcessors();
 	}
@@ -27,7 +28,7 @@ public class ProcessorsFactory {
 	public ImagesStreamProcessor getDefaultProcessor() {
 		if(processors != null && !processors.isEmpty()) {
 			try {
-				return processors.get(0).newInstance();
+				return processors.get(0);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -35,17 +36,21 @@ public class ProcessorsFactory {
 		return null;
 	}
 	
+	public List<ImagesStreamProcessor> getProcessors() {
+		return Collections.unmodifiableList(processors);
+	}
+	
 	@SuppressWarnings("unchecked")
 	private static void loadProcessors() {
 		try {
 			BufferedReader buf = new BufferedReader(new InputStreamReader(ProcessorsFactory.class.getResourceAsStream("processors.lst")));
 			String line;
-			processors = new ArrayList<Class<? extends ImagesStreamProcessor>>();
+			processors = new ArrayList<ImagesStreamProcessor>();
 			try {
 				while((line = buf.readLine()) != null) {
 					try {
 						Class<?> processor = Class.forName(line);
-						processors.add((Class<? extends ImagesStreamProcessor>) processor);
+						processors.add(((Class<? extends ImagesStreamProcessor>) processor).newInstance());
 					} catch (Exception e) {
 						e.printStackTrace();
 					}

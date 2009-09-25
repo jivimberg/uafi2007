@@ -18,8 +18,9 @@ public interface ImagesStream {
 	/**
 	 * Genera una nueva imagen, la devuelve, y notifica a todos los listeners que dicha imagen fue generada.
 	 * @return una nueva imagen generada
+	 * @throws InterruptedException if image obtaining process is interruped by any means
 	 */
-	Image obtainImage();
+	Image obtainImage() throws InterruptedException;
 	
 	/**
 	 * Agrega un listener para ser notificado de las imagenes que genere el stream.
