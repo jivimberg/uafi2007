@@ -13,6 +13,7 @@ import deskcam.resource.CamImagesStream;
 import deskcam.resource.ImagesStream;
 import deskcam.resource.InputsListener;
 import deskcam.resource.InputsResponser;
+import deskcam.resource.SizedImagesStream;
 
 /**
  * 
@@ -22,54 +23,102 @@ import deskcam.resource.InputsResponser;
  */
 public class ControlManager implements InputsResponser {
 
-	private ImagesStreamProcessor processor;
+	private ImagesStreamProcessor actualProcessor;
 	
-	private ImagesStream camImagesStream;
+	private SizedImagesStream camImagesStream;
+	
+	
 
 	/** Stream de imagenes generadas por el procesador */
-	private ImagesStream outputStream;
+	private volatile ImagesStream outputStream;
 	
 	private Map<String, InputsListener> listeners = new HashMap<String, InputsListener>();
 	
 	public void init() {
-		
-		/* Se obtiene el procesador por defecto */
-		processor = ProcessorsFactory.getInstance().getDefaultProcessor();
-		
-		/* Se le setea un InputsResponser encargado de proveerlo de las imagenes que necesite (ej: background image) */
-		processor.setInputsResponser(this);
-		
+		Application.getApplication().getEnvironmentManager().setProcessors(ProcessorsFactory.getInstance().getProcessors());
+
 		/* Se obtiene un player asociado a la webcam para proveer de imagenes al programa */
 		Player player = WebcamAccesPoint.getWebcamPlayer();
 		
 		/* Se crea un stream de imagenes que genere imagenes desde la webcam */
 		camImagesStream = new CamImagesStream(player);
 		
-		/* Se le asigna dicho stream al processador */
-		processor.setInputStream(camImagesStream);
-		
-		/* Se obtiene un stream con las imagenes generadas por el procesador */
-		outputStream = processor.getOutputStream();
-		
 		/* Se crea un recuadro en la interfaz de usuario asociado al player */
 		Application.getApplication().getEnvironmentManager().setStreamPlayer(player);
 		
-		/* Se crea un recuadro en la interfaz de usuario que muestra las imagenes de la webcam capturadas por el procesador */
-		Application.getApplication().getEnvironmentManager().addImagesStreamWindow("Input", camImagesStream);
-		
-		/* Se crea un recuadro en la interfaz de usuario asociado a dicho stream */
-		Application.getApplication().getEnvironmentManager().addImagesStreamWindow("Output", outputStream);
-		
+		/* Se crea inicia el programa con un procesador ya cargado */
+		initProcessor(ProcessorsFactory.getInstance().getDefaultProcessor());
+
 		/* Se inicia un thread que fuerza al procesador a generar nuevas imagenes */
-		Thread th = new Thread("Image Processing Thread") {
+		imageProcessingThread = new Thread("Image Processing Thread") {
 			public void run() {
 				for(;;) {
-					outputStream.obtainImage();
+					synchronized (ControlManager.this) {
+						try {
+							if(outputStream != null) {
+								outputStream.obtainImage();
+							} else {
+								Thread.sleep(100);
+							}
+						} catch (InterruptedException e) {}
+					}
+					while(synchronizing) {
+						Thread.yield();
+					}
 				}
 			};
 		};
-		th.setDaemon(true); // El thread muere al terminar el programa.
-		th.start();
+		imageProcessingThread.setDaemon(true); // El thread muere al terminar el programa.
+		imageProcessingThread.start();
+	}
+	
+	private Thread imageProcessingThread; 
+	
+	private volatile boolean synchronizing;
+	
+	public void initProcessor(ImagesStreamProcessor processor) {
+	
+		synchronizing = true;
+		
+		if(imageProcessingThread != null) {
+			imageProcessingThread.interrupt();
+		}
+		
+		synchronized (this) {
+
+			synchronizing = false;
+
+			if(actualProcessor != null) {
+				
+				outputStream = null;
+				
+				actualProcessor.relaseResouces();
+				
+				Application.getApplication().getEnvironmentManager().clearPanels();
+				
+			}
+			
+			/* Se obtiene el procesador por defecto */
+			actualProcessor = processor;
+			
+			/* Se le setea un InputsResponser encargado de proveerlo de las imagenes que necesite (ej: background image) */
+			actualProcessor.setInputsResponser(this);
+			
+			/* Se le asigna dicho stream al processador */
+			actualProcessor.setInputStream(camImagesStream);
+			
+			/* Se obtiene un stream con las imagenes generadas por el procesador */
+			outputStream = actualProcessor.getOutputStream();
+			
+			/* Se crea un recuadro en la interfaz de usuario que muestra las imagenes de la webcam capturadas por el procesador */
+			Application.getApplication().getEnvironmentManager().addImagesStreamWindow("Input", camImagesStream);
+			
+			/* Se crea un recuadro en la interfaz de usuario asociado a dicho stream */
+			Application.getApplication().getEnvironmentManager().addImagesStreamWindow("Output", outputStream);
+			
+		}
+		
+		
 	}
 
 	@Override
@@ -87,8 +136,7 @@ public class ControlManager implements InputsResponser {
 		listeners.get(resourceName).imageObtained(resourceName, img);
 	}
 
-	public ImagesStream getCamImagesStream() {
+	public SizedImagesStream getCamImagesStream() {
 		return camImagesStream;
 	}
-	
 }

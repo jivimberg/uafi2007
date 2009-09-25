@@ -1,5 +1,6 @@
 package deskcam.resource;
 
+import java.awt.Dimension;
 import java.awt.Image;
 import java.util.Vector;
 
@@ -15,7 +16,7 @@ import javax.media.util.BufferToImage;
  * la webcam.
  *
  */
-public class CamImagesStream implements ImagesStream {
+public class CamImagesStream implements SizedImagesStream {
 
 	private FrameGrabbingControl control;
 	
@@ -58,4 +59,17 @@ public class CamImagesStream implements ImagesStream {
 		return listeners.remove(listener);
 	}
 
+	private Dimension size;
+	
+	@Override
+	public Dimension getSize() {
+		if(size == null) {
+			Image img = obtainImage();
+			size = new Dimension(img.getWidth(null), img.getHeight(null));
+		}
+		return new Dimension(size);
+	}
+
+	
+	
 }

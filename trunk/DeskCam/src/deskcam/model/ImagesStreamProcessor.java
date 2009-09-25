@@ -47,5 +47,11 @@ public interface ImagesStreamProcessor {
 	ImagesStream getOutputStream();
 	
 	String getProcessorName();
+
+	/**
+	 * Libera posibles recursos mantenidos por el procesador, debido a que este dejara de
+	 * ejecutarse.
+	 */
+	void relaseResouces();
 	
 }

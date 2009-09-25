@@ -10,6 +10,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 import deskcam.Application;
 
@@ -30,7 +31,10 @@ public class ImagePanel extends JPanel {
 		
 		this.resourceName = name;
 		
-		add(new JLabel(resourceName), BorderLayout.NORTH);
+		JLabel label = new JLabel(resourceName);
+		label.setHorizontalAlignment(SwingConstants.CENTER);
+		label.setFont(label.getFont().deriveFont(12f));
+		add(label, BorderLayout.NORTH);
 		
 		add(image = new JLabel());
 		
@@ -55,7 +59,7 @@ public class ImagePanel extends JPanel {
 	private Action load = new AbstractAction("Load") {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			Application.getApplication().getCommandsManager().captureImage(resourceName);
+			Application.getApplication().getCommandsManager().loadImage(resourceName);
 		}
 	};
 	
