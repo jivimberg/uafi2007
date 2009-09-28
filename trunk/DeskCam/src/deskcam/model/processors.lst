@@ -5,3 +5,5 @@ deskcam.model.impl.Velocity
 deskcam.model.impl.Fire
 deskcam.model.impl.Darkness
 deskcam.model.impl.Composition
+deskcam.model.impl.ColorStripes
+deskcam.model.impl.Chess

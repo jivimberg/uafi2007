@@ -52,8 +52,10 @@ public interface PixelEqualityCriteria {
 		}
 	}
 	
+
 	public static enum CRITERIAS {
-		ADAPTABLE_LUMINANCE("Adaptable Luminance", AdaptableLuminanceCriteria.class), RGB_MATCH("RGB Match", RGBMatch.class);
+		ADAPTABLE_LUMINANCE("Adaptable Luminance", AdaptableLuminanceCriteria.class),
+		RGB_MATCH("RGB Match", RGBMatch.class);
 		private String name;
 		private Class<? extends PixelEqualityCriteria> claSs;
 		CRITERIAS(String name, Class<? extends PixelEqualityCriteria> claSs) {

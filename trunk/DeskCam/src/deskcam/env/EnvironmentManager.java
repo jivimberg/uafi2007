@@ -14,6 +14,7 @@ import java.util.Map;
 import javax.media.Player;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.ButtonGroup;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -83,14 +84,17 @@ public class EnvironmentManager {
 	
 	@SuppressWarnings("serial")
 	public void setProcessors(List<ImagesStreamProcessor> processors) {
+		ButtonGroup group = new ButtonGroup();
 		int first = effects.getPopupMenu().getComponentCount();
 		for (final ImagesStreamProcessor processor : processors) {
-			effects.add(new JRadioButtonMenuItem(new AbstractAction(processor.getProcessorName()) {
+			JRadioButtonMenuItem radio = new JRadioButtonMenuItem(new AbstractAction(processor.getProcessorName()) {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					Application.getApplication().getCommandsManager().loadProcessor(processor);
 				}
-			}));
+			});
+			group.add(radio);
+			effects.add(radio);
 		}
 		if(!processors.isEmpty()) {
 			((JRadioButtonMenuItem)effects.getPopupMenu().getComponent(first)).getAction().putValue(Action.SELECTED_KEY, true);
