@@ -10,11 +10,4 @@ Acerca de JMF:
 	direccion que les al buildpath no se soluciona, por que van a estar importando 2 veces las mismas librerias.
 	Para arreglarlo tiene que configurar un nuevo JDK para el proyecto.
 	Cuando ponen para buscar la carpeta en donde se encuentra, pongan la del JDK de siempre, pero 
-	en el recuadro de abajo cuando se cargen las librerias que hay en ese jdk, quiten jmf.jar y sound.jar.
-	
-	Puede ser confuso, y no soy el mejor explicando, pero no es complicado.
-	
-	
-División de Tareas:
-
-	-Cata: A ver si puedo hacer Commit ^^
+	en el recuadro de abajo cuando se cargen las librerias que hay en ese jdk, quiten jmf.jar y sound.jar
