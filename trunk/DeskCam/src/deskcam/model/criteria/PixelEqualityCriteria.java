@@ -2,8 +2,24 @@ package deskcam.model.criteria;
 
 import deskcam.model.RGBConstants;
 
+/**
+ * Esta interfaz permite implementar distintos criterios para comparar pixeles.
+ * Se proveen por default 2 implementaciones:
+ * 	- La primera calcula los desvios cuadráticos de cada componente de RGB.
+ * 	- La segunda determina si existe algun coeficiente que multiplique a los 3 componentes RGB (cambiando la luminosidad del pixel).
+ * 
+ * Se pueden agregar nuevos criterios al enum CRITERIAS, siempre y cuando estos tengan un constructor
+ * publico que reciba un unico parámetro de tipo int, para ser instanciado mediante reflection.  	 
+ * @author Daniel
+ */
 public interface PixelEqualityCriteria {
 
+	/**
+	 * Compara los pixeles px0 y px1, presentados como ints con el formato 0xRRGGBB.
+	 * @param px0 
+	 * @param px1
+	 * @return si los pixeles equivalentes.
+	 */
 	boolean pxEquals(int px0, int px1);
 
 	public static class RGBMatch implements PixelEqualityCriteria, RGBConstants {
